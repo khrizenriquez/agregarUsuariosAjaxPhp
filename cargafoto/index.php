@@ -39,13 +39,18 @@ require_once './scriptsPHP/instruccionesBD.php';
         <section id="secContenedor">
             <!-- articulo que contiene el formulario de ingreso de datos -->
             <article id="artIngresoDatosUsuario">
-                <form action="scriptsPHP/insertandoDatos.php" method="POST" id="formIngresoDatos" class="form-inline">
+                <form action="" method="POST" id="formIngresoDatos" class="form-inline">
                     <fieldset id="fieldsetDatosUsuario">
-                        <legend align='center'><i class="icon-book"></i>Registrate</legend>
-                        <input maxlength="40" type="text" title="Ingresa tu nombre" placeholder="Nombre" class="input-block-level" id="txtNombreRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
-                        <input maxlength="90" type="text" title="Ingresa tus apellidos" placeholder="Apellidos" class="input-block-level" id="txtApellidosRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
-                        <input maxlength="40" type="text" title="Ingresa el nombre de usuario que quieres tener" placeholder="Usuario" class="input-block-level" id="txtUsuarioRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
-                        <input maxlength="20" type="password" title="Ingresa tu contraseña" placeholder="Contraseña" class="input-block-level" id="txtClaveRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
+                        <h3><i class="icon-book icon-white"></i>Registrate</h3>
+                        <hr />
+                        <span></span>
+                        <input maxlength="40" type="text" title="Ingresa tu nombre" placeholder="Nombre" class="input-block-level" id="txtNombreRegistro" name="txtNombreRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
+                        <span></span>
+                        <input maxlength="90" type="text" title="Ingresa tus apellidos" placeholder="Apellidos" class="input-block-level" id="txtApellidosRegistro" name="txtApellidosRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
+                        <span></span>
+                        <input maxlength="40" type="text" title="Ingresa el nombre de usuario que quieres tener" placeholder="Usuario" class="input-block-level" id="txtUsuarioRegistro" name="txtUsuarioRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
+                        <span></span>
+                        <input maxlength="20" type="password" title="Ingresa tu contraseña" placeholder="Contraseña" class="input-block-level" id="txtClaveRegistro" name="txtClaveRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
                         
                     </fieldset>
                     
@@ -54,15 +59,18 @@ require_once './scriptsPHP/instruccionesBD.php';
                             <figure id="figureContenedorImagenUsuario">
                                 <img class="img-circle" src="img/imgIconos/userMale128.png" alt="Sube tu foto" title="Puedes subir tu foto" id="imgFotoIndex" />
                             </figure>
+                            <input type="hidden" value="" name="txtEscondido" id="txtEscondido" />
                         </div>
                         <button class="btn btn-primary" title="Quiero subir mi foto" id="btnGuardarDatos" type="submit" role='button'><i class="icon-camera icon-white"></i>Cargar foto</button>
+                    
                     </fieldset>
+                    
                     <br />
-                    <button class="btn btn-success" title="Quiero registrarme en tu página" id="btnGuardarDatos" type="submit" role='button'><i class="icon-ok icon-white"></i>Registrarme</button>
+                    <button class="btn btn-success" title="Quiero registrarme en tu página" id="btnRegistrarme" type="submit" role='button'><i class="icon-ok icon-white"></i>Registrarme</button>
                 </form>
                 <div id="divImgCargando">
                     <img src="img/loaders/ajax-loaderPackmanNegro.gif" alt="Cargando" />
-                    <label for="subiendo" class="">Cargando foto</label>
+                    <label for="subiendo" class="">Cargando...</label>
                 </div>
             </article>
         </section>

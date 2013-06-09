@@ -4,7 +4,10 @@ $(document).on("ready", cargandoImagen);
 $(document).on("ready", abriendoVentanaModal);
 $(document).on("ready", llamandoVentanas);
 $(document).on("ready", validandoFormulario);
+$(document).on("ready", validandoNuevosRegistros);
 
+var btnFirma = $('#btnGuardarDatos'), interval;
+var insertarOActualizar = false;
 //------------------------------------------------------------------------------coloca el tooltip a mis etiqutas
 function textotTooltip()
 {
@@ -30,8 +33,6 @@ function cargandoImagen()
 {
     $(function()
     {
-        var btnFirma = $('#btnGuardarDatos'), interval;
-
         new AjaxUpload('#btnGuardarDatos', {
             action: 'scriptsPHP/subirFoto.php',
             onSubmit: function(file, ext){
@@ -59,6 +60,8 @@ function cargandoImagen()
                     $('#imgFotoIndex').removeAttr('src');//remuevo la imagen por defecto
 
                     $('#imgFotoIndex').attr('src', 'img/imgSubidasTemporal/' + respuesta.fileName);
+                    
+                    $('#txtEscondido').attr('value', 'img/imgSubidasTemporal/' + respuesta.fileName);
                 }else
                 {
                     alert(respuesta.mensaje);
@@ -120,3 +123,138 @@ function validandoFormulario()
     });
 }
 //------------------------------------------------------------------------------validando formulario
+
+//------------------------------------------------------------------------------validando ingreso de usuarios (nuevos registros)
+// Validar Formulario
+//$(function()
+//{
+//    $('#formIngresoDatos').validate({
+//        submitHandler: function(){
+//
+//            var str = $('#formIngresoDatos').serialize();
+//            $.ajax({
+//                beforeSend: function()
+//                {
+//                    $('#divImgCargando').show();
+//                    btnFirma.html('<i class="icon-upload icon-white"></i>Guardando');
+////                    btnFirma.text('Espera por favor');
+//                    this.disable();
+//                },
+//                cache: false,
+//                type: "POST",
+//                dataType: "json",
+//                url:"includes/phpAjaxUsers.inc.php",
+//                data:str + "&id=" + Math.random(),
+//                success: function(response)
+//                {
+//                    // Validar mensaje de error
+//                    if(response.respuesta == false)
+//                    {
+//                            alert(response.mensaje);
+//                    }
+//                    else
+//                    {
+//                        // si es exitosa la operación
+//                        $('#agregarUser').dialog('close');
+//
+//                        // alert(response.contenido);
+//
+//                        if($('#sinDatos').length)
+//                        {
+//                            $('#sinDatos').remove();
+//                        }
+//
+//                        // Validad tipo de acción
+//                        if($('#accion').val() == 'editUser')
+//                        {
+//                            $('#listaUsuariosOK').empty();
+//                        }
+//
+//                        $('#listaUsuariosOK').append(response.contenido);
+//                    }
+//
+//                    $('#formIngresoDatos .ajaxLoader').hide();
+//
+//                },
+//                error:function()
+//                {
+//                    alert('ERROR GENERAL DEL SISTEMA, INTENTE MAS TARDE');
+//                }
+//            });
+//            return false;
+//        },
+//        errorPlacement: function(error, element)
+//        {
+//            error.appendTo(element.prev("span").append());
+//        }
+//    });
+//});
+//------------------------------------------------------------------------------validando ingreso de usuarios (nuevos registros)
+
+//------------------------------------------------------------------------------validando que los datos esten llenos completamente
+function validandoNuevosRegistros()
+{
+    $('#btnRegistrarme').click(function()//activo esta funcion cuando me salgo del foco de el campo direccion
+    {
+        if(insertarOActualizar == false)
+        {
+            if($("#txtNombreRegistro").val().length > 2 && $("#txtApellidosRegistro").val().length > 2 &&
+                $("#txtUsuarioRegistro").val().length > 2 && $("#txtClaveRegistro").val().length > 2)
+            {
+                var str = $('#formIngresoDatos').serialize();
+                $.ajax({
+                    beforeSend: function(){
+                      $('#divImgCargando').html("<img src='img/loaders/ajax-loaderPackmanNegro.gif' alt='Cargando' />\n\
+                                                    <label for='subiendo' class=''>Guardando...</label>");
+                    },
+                    cache: false,
+                    type:'POST',
+                    dataType: "json",
+                    url:'scriptsPHP/guardarNuevosUsuarios.php',//esta es la direccion que me llevara al archivo para hacer las inserciones
+//                        url:'scriptsPHP/insertTransDatosEmpleados.php',//esta es la direccion que me llevara al archivo para hacer las inserciones
+                    //url:'insertar.php',//esta es la direccion que me llevara al archivo para hacer las inserciones
+                    data:str + "&id=" + Math.random(),
+                    success: function(response)
+                    {
+                        // Validar mensaje de error
+                        if(response.respuesta == false)
+                        {
+                                alert(response.mensaje);
+                        }
+//                        else
+//                        {
+//                            // si es exitosa la operación
+//                            $('#agregarUser').dialog('close');
+//
+//                            // alert(response.contenido);
+//
+//                            if($('#sinDatos').length)
+//                            {
+//                                $('#sinDatos').remove();
+//                            }
+//
+//                            // Validad tipo de acción
+//                            if($('#accion').val() == 'editUser')
+//                            {
+//                                $('#listaUsuariosOK').empty();
+//                            }
+//
+//                            $('#listaUsuariosOK').append(response.contenido);
+//                        }
+
+//                    $('#formUsers .ajaxLoader').hide();
+                    }
+                });
+                return false;
+            }else
+            {
+//                $('#lblMensajeVacio').fadeIn('slow').css('display', 'inline-block');
+                return false;
+            }
+        }else
+        {
+            alert("Ya estoy llena");
+        }
+    });
+}
+//------------------------------------------------------------------------------validando que los datos esten llenos completamente

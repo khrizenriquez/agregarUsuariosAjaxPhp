@@ -2,15 +2,15 @@
 /*script php de Luis Cazares @cazaresluis*/
 
 // Tiempo de espera del script
-sleep(2);
+sleep(3);
 
 // ini_set("display_errors", 1);
 
 // Definimos variables generales
 
 define("maxUpload", 50000);//tamaño maximo de 500 kb
-define("maxWidth", 800); //el largo de la foto
-define("maxHeight", 800);//el alto de la foto
+define("maxWidth", 900); //el largo de la foto
+define("maxHeight", 900);//el alto de la foto
 define("uploadURL", '../img/imgSubidasTemporal/');
 define("fileName", 'foto_');
 

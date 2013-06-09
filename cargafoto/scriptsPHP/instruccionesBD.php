@@ -39,24 +39,9 @@ class InstruccionesGenerales
     }
     function insertandoValores($queryInsertar)
     {
-        //ESTA DEBE SER LA ESTRUCTURA DE LOS QUERIES CUANDO SE ENVIEN
-//        $sql="insert into personas values (null,?,?,?,?);"; 
         $insertando = ConexionPDO::conexion($this->nombreHost, $this->usuario, $this->clave, $this->nombreBD)->prepare($queryInsertar);
-        //SIQUISIERAMOS QUE NUESTRAS CONSULTAS FUERAN SEGURAS PODEMOS USAR ESTAS VARIABLES CON EL QUERY DE ARRIBA (CON ?)
-//        $insertando->bindParam(1, $nom);
-//        $insertando->bindParam(2, $correo);
-//        $insertando->bindParam(3, $tel);
-//        $insertando->bindParam(4, $pais);
-//
-//        $nom=strip_tags($_POST["nom"]);
-//        $correo=strip_tags($_POST["correo"]);
-//        $tel=strip_tags($_POST["tel"]);
-//        $pais=strip_tags($_POST["pais"]);
-        //SIQUISIERAMOS QUE NUESTRAS CONSULTAS FUERAN SEGURAS PODEMOS USAR ESTAS VARIABLES CON EL QUERY DE ARRIBA (CON ?)
         
         $insertando->execute();//para ejecutar nuestro query
-        //esto nos servira para direccionar nuestro archivo php
-//        header("Location: insertar_personas.php?m=1");
         $insertando = null;//dejamos con un valor nulo la conexion
     }
 //    function insertandoTransaccionDatosPersonales($queryInsertar)
@@ -171,21 +156,6 @@ class InstruccionesGenerales
 //                }
             $actualizandoTransaccion = null;//dejamos con un valor nulo la conexion
         }
-    }
-    function obteniendoId()
-    {
-        return $this->id;
-    }
-    
-    function consultaUsers()
-    {
-        $salida = '';
-
-        $consulta = ConexionPDO::conexion($this->nombreHost, $this->usuario, $this->clave, $this->nombreBD);  
-        $mostrandoDatos = $consulta->query("");
-        
-        
-        return $salida;
     }
 }
 ?>
