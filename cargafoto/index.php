@@ -43,6 +43,10 @@ require_once './scriptsPHP/instruccionesBD.php';
                     <fieldset id="fieldsetDatosUsuario">
                         <h3><i class="icon-book icon-white"></i>Registrate</h3>
                         <hr />
+                        <fieldset id="ocultos">
+                            <input type="hidden" id="accion" name="accion" class="{required:true}" value="addUser"/>
+                            <input type="hidden" id="id_user" name="id_user" class="{required:true}" value="0"/>
+	    		</fieldset>
                         <span></span>
                         <input maxlength="40" type="text" title="Ingresa tu nombre" placeholder="Nombre" class="input-block-level" id="txtNombreRegistro" name="txtNombreRegistro" /><span id="mensaje"><i class="icon-ok-sign"></i></span>
                         <span></span>
@@ -88,7 +92,7 @@ require_once './scriptsPHP/instruccionesBD.php';
                             <td>Eliminar</td>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="listaUsuarios">
                         <?php
                         $mostrandoTabla = new InstruccionesGenerales();
                         $mostrandoDatos = $mostrandoTabla->mostrandoValores("SELECT tbdatosusuario.direccionarchivos as 'direccionFoto', tbdatosusuario.nombreusuario as 'nombreUsuario', tbdatosusuario.usuario as 'nickUsuario' FROM tbdatosusuario INNER JOIN tbusuarios ON tbdatosusuario.usuario = tbusuarios.usuario ORDER BY nombreusuario");
@@ -98,29 +102,22 @@ require_once './scriptsPHP/instruccionesBD.php';
                             for($i = 0; $i < count($mostrandoDatos); $i++)
                             {
                                 print $salida = "<tr>
-                                                <td class='tdEspacioPequenio'><img class='img-circle imgTablaIndex' src='img/imgSubidasTemporal/".$mostrandoDatos[$i]['direccionFoto']."' alt='Soy ' /></td>
+                                                <td class='tdEspacioPequenio'><img class='img-circle imgTablaIndex' src='".$mostrandoDatos[$i]['direccionFoto']."' alt='Soy ".$mostrandoDatos[$i]['nombreUsuario']."' /></td>
                                                 <td>".$mostrandoDatos[$i]['nombreUsuario']."</td>
                                                 <td>".$mostrandoDatos[$i]['nickUsuario']."</td>
-                                                <td class='tdEspacioPequenio'><button id='btnEditarIndex' title='Quiero editar este registro' class='btn btn-warning'><i class='icon-edit icon-white'></i>Editar</button></td>
-                                                <td class='tdEspacioPequenio'><button id='btnEliminarIndex' title='Quiero eliminar este registro' class='btn btn-danger'><i class='icon-remove icon-white'></i>Eliminar</button></td>
+                                                <td class='tdEspacioPequenio'><button id='btnEditarIndex' title='Quiero editar los datos de ".$mostrandoDatos[$i]['nombreUsuario']."' class='btn btn-warning'><i class='icon-edit icon-white'></i>Editar</button></td>
+                                                <td class='tdEspacioPequenio'><button id='btnEliminarIndex' title='Quiero eliminar los datos de ".$mostrandoDatos[$i]['nombreUsuario']."' class='btn btn-danger'><i class='icon-remove icon-white'></i>Eliminar</button></td>
                                             </tr>";
                             }
                         }else
                         {
-                            $salida = '
+                            print $salida = '
                                     <tr id="sinDatos">
                                             <td colspan="5" class="centerTXT">NO HAY REGISTROS EN LA BASE DE DATOS</td>
                                     </tr>
                             ';
                         }
                         ?>
-<!--                        <tr>
-                            <td class="tdEspacioPequenio"><img class="img-circle imgTablaIndex" src="img/imgSubidasTemporal/foto_08-06-2013_1370724498.jpg" alt="Tu foto" /></td>
-                            <td>Khriz</td>
-                            <td>khrizenriquez</td>
-                            <td class="tdEspacioPequenio"><button id="btnEditarIndex" title="Quiero editar este registro" class="btn btn-warning"><i class="icon-edit icon-white"></i>Editar</button></td>
-                            <td class="tdEspacioPequenio"><button id="btnEliminarIndex" title="Quiero eliminar este registro" class="btn btn-danger"><i class="icon-remove icon-white"></i>Eliminar</button></td>
-                        </tr>-->
                     </tbody>
                 </table>
             </div>

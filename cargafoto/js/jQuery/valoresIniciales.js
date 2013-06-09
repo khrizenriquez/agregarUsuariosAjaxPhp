@@ -7,6 +7,7 @@ $(document).on("ready", validandoFormulario);
 $(document).on("ready", validandoNuevosRegistros);
 
 var btnFirma = $('#btnGuardarDatos'), interval;
+var btnGuardar = $('#btnRegistrarme'), interval;
 var insertarOActualizar = false;
 //------------------------------------------------------------------------------coloca el tooltip a mis etiqutas
 function textotTooltip()
@@ -204,8 +205,8 @@ function validandoNuevosRegistros()
                 var str = $('#formIngresoDatos').serialize();
                 $.ajax({
                     beforeSend: function(){
-                      $('#divImgCargando').html("<img src='img/loaders/ajax-loaderPackmanNegro.gif' alt='Cargando' />\n\
-                                                    <label for='subiendo' class=''>Guardando...</label>");
+                      $('#divImgCargando').show();
+                      btnGuardar.html('<i class="icon-upload icon-white"></i>Espera por favor');
                     },
                     cache: false,
                     type:'POST',
@@ -213,35 +214,34 @@ function validandoNuevosRegistros()
                     url:'scriptsPHP/guardarNuevosUsuarios.php',//esta es la direccion que me llevara al archivo para hacer las inserciones
 //                        url:'scriptsPHP/insertTransDatosEmpleados.php',//esta es la direccion que me llevara al archivo para hacer las inserciones
                     //url:'insertar.php',//esta es la direccion que me llevara al archivo para hacer las inserciones
-                    data:str + "&id=" + Math.random(),
+                    data: str + "&accion=addUser&id=" + Math.random(),
                     success: function(response)
                     {
-                        // Validar mensaje de error
+                        alert("Si esta llegando aqui");
+//                        // Validar mensaje de error
                         if(response.respuesta == false)
                         {
                                 alert(response.mensaje);
                         }
-//                        else
-//                        {
-//                            // si es exitosa la operación
+                        else
+                        {
+                            // si es exitosa la operación
 //                            $('#agregarUser').dialog('close');
-//
-//                            // alert(response.contenido);
-//
-//                            if($('#sinDatos').length)
-//                            {
-//                                $('#sinDatos').remove();
-//                            }
-//
-//                            // Validad tipo de acción
+                            alert(response.contenido);
+                            btnGuardar.html('<i class="icon-ok icon-white"></i>Registrarme');
+                            $('#divImgCargando').hide();
+                            if($('#sinDatos').length)
+                            {
+                                $('#sinDatos').remove();
+                            }
+                            // Validad tipo de acción
 //                            if($('#accion').val() == 'editUser')
 //                            {
 //                                $('#listaUsuariosOK').empty();
 //                            }
-//
-//                            $('#listaUsuariosOK').append(response.contenido);
-//                        }
-
+                            $('#listaUsuarios').append(response.contenido);
+                        }
+                        
 //                    $('#formUsers .ajaxLoader').hide();
                     }
                 });

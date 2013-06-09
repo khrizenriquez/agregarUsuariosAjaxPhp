@@ -8,7 +8,7 @@ sleep(3);
 
 // Definimos variables generales
 
-define("maxUpload", 50000);//tamaño maximo de 500 kb
+define("maxUpload", 512000);//tamaño maximo de 500 kb
 define("maxWidth", 900); //el largo de la foto
 define("maxHeight", 900);//el alto de la foto
 define("uploadURL", '../img/imgSubidasTemporal/');
@@ -87,5 +87,5 @@ else
 
 $salidaJson = array("respuesta" => $respuestaFile, "mensaje" => $mensajeFile, "fileName" => $fileName);
 
-echo json_encode($salidaJson);
+print json_encode($salidaJson);
 ?>
