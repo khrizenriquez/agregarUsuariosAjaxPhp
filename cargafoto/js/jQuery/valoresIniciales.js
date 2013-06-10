@@ -5,10 +5,12 @@ $(document).on("ready", abriendoVentanaModal);
 $(document).on("ready", llamandoVentanas);
 $(document).on("ready", validandoFormulario);
 $(document).on("ready", validandoNuevosRegistros);
+$(document).on("ready", editandoArchivos);
 
 var btnFirma = $('#btnGuardarDatos'), interval;
 var btnGuardar = $('#btnRegistrarme'), interval;
 var insertarOActualizar = false;
+var accion_ok = 'noAccion';
 //------------------------------------------------------------------------------coloca el tooltip a mis etiqutas
 function textotTooltip()
 {
@@ -124,74 +126,6 @@ function validandoFormulario()
     });
 }
 //------------------------------------------------------------------------------validando formulario
-
-//------------------------------------------------------------------------------validando ingreso de usuarios (nuevos registros)
-// Validar Formulario
-//$(function()
-//{
-//    $('#formIngresoDatos').validate({
-//        submitHandler: function(){
-//
-//            var str = $('#formIngresoDatos').serialize();
-//            $.ajax({
-//                beforeSend: function()
-//                {
-//                    $('#divImgCargando').show();
-//                    btnFirma.html('<i class="icon-upload icon-white"></i>Guardando');
-////                    btnFirma.text('Espera por favor');
-//                    this.disable();
-//                },
-//                cache: false,
-//                type: "POST",
-//                dataType: "json",
-//                url:"includes/phpAjaxUsers.inc.php",
-//                data:str + "&id=" + Math.random(),
-//                success: function(response)
-//                {
-//                    // Validar mensaje de error
-//                    if(response.respuesta == false)
-//                    {
-//                            alert(response.mensaje);
-//                    }
-//                    else
-//                    {
-//                        // si es exitosa la operación
-//                        $('#agregarUser').dialog('close');
-//
-//                        // alert(response.contenido);
-//
-//                        if($('#sinDatos').length)
-//                        {
-//                            $('#sinDatos').remove();
-//                        }
-//
-//                        // Validad tipo de acción
-//                        if($('#accion').val() == 'editUser')
-//                        {
-//                            $('#listaUsuariosOK').empty();
-//                        }
-//
-//                        $('#listaUsuariosOK').append(response.contenido);
-//                    }
-//
-//                    $('#formIngresoDatos .ajaxLoader').hide();
-//
-//                },
-//                error:function()
-//                {
-//                    alert('ERROR GENERAL DEL SISTEMA, INTENTE MAS TARDE');
-//                }
-//            });
-//            return false;
-//        },
-//        errorPlacement: function(error, element)
-//        {
-//            error.appendTo(element.prev("span").append());
-//        }
-//    });
-//});
-//------------------------------------------------------------------------------validando ingreso de usuarios (nuevos registros)
-
 //------------------------------------------------------------------------------validando que los datos esten llenos completamente
 function validandoNuevosRegistros()
 {
@@ -217,7 +151,6 @@ function validandoNuevosRegistros()
                     data: str + "&accion=addUser&id=" + Math.random(),
                     success: function(response)
                     {
-                        alert("Si esta llegando aqui");
 //                        // Validar mensaje de error
                         if(response.respuesta == false)
                         {
@@ -227,22 +160,20 @@ function validandoNuevosRegistros()
                         {
                             // si es exitosa la operación
 //                            $('#agregarUser').dialog('close');
-                            alert(response.contenido);
+                            
                             btnGuardar.html('<i class="icon-ok icon-white"></i>Registrarme');
                             $('#divImgCargando').hide();
-                            if($('#sinDatos').length)
-                            {
-                                $('#sinDatos').remove();
-                            }
-                            // Validad tipo de acción
-//                            if($('#accion').val() == 'editUser')
+//                            if($('#sinDatos').length)
 //                            {
-//                                $('#listaUsuariosOK').empty();
+//                                $('#sinDatos').remove();
 //                            }
+                            // Validad tipo de acción
+                            if($('#accion').val() == 'editUser')
+                            {
+                                $('#listaUsuarios').empty();
+                            }
                             $('#listaUsuarios').append(response.contenido);
                         }
-                        
-//                    $('#formUsers .ajaxLoader').hide();
                     }
                 });
                 return false;
@@ -253,8 +184,47 @@ function validandoNuevosRegistros()
             }
         }else
         {
-            alert("Ya estoy llena");
+//            alert("Ya estoy llena");
         }
     });
 }
 //------------------------------------------------------------------------------validando que los datos esten llenos completamente
+
+//------------------------------------------------------------------------------editando valores de nuestra tabla
+function editandoArchivos()
+{
+    $('body').on("click", '#listaUsuarios a', function(e){
+        e.preventDefault();
+        
+        // Id Usuario
+//        idUser_ok = $(this).attr('href');
+        accion_ok = $(this).attr('data-accion');
+
+//        $('#id_user').val(idUser_ok);
+        $('#id_user').val(this).attr('href');
+
+//        if(accion_ok == 'editar')
+//        {
+            // Valor de la acción
+            $('#accion').val('editUser');
+
+            // Llenar el formulario con los datos del registro seleccionado
+            $('#txtNombreRegistroEditar').val($(this).parent().parent().children('td:eq(1)').text());
+            $('#txtUsuarioRegistroEditar').val($(this).parent().parent().children('td:eq(2)').text());
+
+            // Seleccionar status
+//            $('#usr_status option[value='+ $(this).parent().parent().children('td:eq(3)').text() +']').attr('selected',true);
+
+            // Abrimos el Formulario
+            $('#agregarUser').dialog({
+                    title:'Editar Usuario',
+                    autoOpen:true
+            });
+
+        //}//else if($(this).attr('data-accion') == 'eliminar')
+//        {
+//            $('#dialog-borrar').dialog('open');
+//        }
+    });
+}
+//------------------------------------------------------------------------------editando valores de nuestra tabla

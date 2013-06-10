@@ -16,8 +16,8 @@ body
     background: -ms-linear-gradient(45deg,  rgba(40,176,255,1) 24%,rgba(40,176,255,1) 100%); /* IE10+ */
     background: linear-gradient(45deg,  rgba(40,176,255,1) 24%,rgba(40,176,255,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#28b0ff', endColorstr='#28b0ff',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
-
     font-size: 16px;
+    padding: 3em 0.5em 5em 0.5em;
     text-align: center;
 }
 html
@@ -74,9 +74,9 @@ html
     background: -ms-linear-gradient(45deg,  rgba(255,99,28,1) 0%,rgba(255,124,68,1) 45%,rgba(255,145,102,1) 45%); /* IE10+ */
     background: linear-gradient(45deg,  rgba(255,99,28,1) 0%,rgba(255,124,68,1) 45%,rgba(255,145,102,1) 45%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff631c', endColorstr='#ff9166',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
-    height: 10em;
+    height: 13.5em;
     margin: auto;
-    width: 10em;
+    width: 15em;
 }
 #fieldsetDatosUsuario
 {

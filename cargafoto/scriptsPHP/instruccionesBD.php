@@ -8,6 +8,8 @@ class InstruccionesGenerales
     private $clave;
     private $nombreBD;
     private $datos;
+    private $contador;
+    private $com;
     
     function __construct()
     {
@@ -16,6 +18,8 @@ class InstruccionesGenerales
         $this->clave = "";
         $this->nombreBD = "bdcargafoto";
         $this->datos = array();
+        $this->contador = array();
+        $this->com=array();
     }
     
     //--------------------------------------------------------------------------metodo que se encargara de regresarnos un valor de algun select
@@ -230,9 +234,8 @@ class InstruccionesGenerales
                                     <td class='tdEspacioPequenio'><img class='img-circle imgTablaIndex' src='img/imgSubidasTemporal/".$_POST['txtEscondido']."' alt='Soy ' /></td>
                                         <td>".$_POST['txtNombreRegistro']."</td>
                                         <td>".$_POST['txtUsuarioRegistro']."</td>
-                                        <td class='tdEspacioPequenio'><button id='btnEditarIndex' title='Quiero editar este registro' class='btn btn-warning'><i class='icon-edit icon-white'></i>Editar</button></td>
-                                        <td class='tdEspacioPequenio'><button id='btnEliminarIndex' title='Quiero eliminar este registro' class='btn btn-danger'><i class='icon-remove icon-white'></i>Eliminar</button></td>
-                                    </tr>";
+                                        <td class='tdEspacioPequenio'><a href='$nickName' id='' title='Quiero editar este registro' class='btn btn-warning'><i class='icon-edit icon-white'></i>Editar</a></td>
+                                </tr>";
                     }
                     else
                     {
@@ -240,50 +243,67 @@ class InstruccionesGenerales
                     }
 
                 break;
+                
+                case 'editUser':
+                        // Armamos el query
+                    $editandoTransaccion = ConexionPDO::conexion($this->nombreHost, $this->usuario, $this->clave, $this->nombreBD);
+                    $stmEditandoUsuarios = $editandoTransaccion->prepare("UPDATE tbusuarios SET usuario = '?'");
+                    $stmEditandoDP = $editandoTransaccion->prepare("UPDATE tbdatosusuario SET nombreusuario = '?', usuario = '?'");//insertando en la tabla datos generales
+                    try
+                    {
+                        $editandoTransaccion->beginTransaction();
 
-                    case 'editUser':
-                            // Armamos el query
-                            $query = sprintf("UPDATE tbl_usuarios
-                                                             SET usr_nombre='%s', usr_puesto='%s', usr_nick='%s', usr_status='%s'
-                                                             WHERE id_user=%d LIMIT 1",
-                                                             $_POST['usr_nombre'],$_POST['usr_puesto'],$_POST['usr_nick'],$_POST['usr_status'],$_POST['id_user']);
+                        $stmEditandoUsuarios->bindParam(1, $nom);
+                        
+                        $nom = strip_tags($_POST["txtNombreRegistroEditar"]);
+                        //SIQUISIERAMOS QUE NUESTRAS CONSULTAS FUERAN SEGURAS PODEMOS USAR ESTAS VARIABLES CON EL QUERY DE ARRIBA (CON ?)
 
-                            // Ejecutamos el query
-                            $resultadoQuery = $mysqli -> query($query);
+                        $stmEditandoDP->bindParam(1, $nombreUsuario);
+                        $stmEditandoDP->bindParam(2, $nickNameUsuario);
 
-                            // Validamos que se haya actualizado el registro
-                            if($mysqli -> affected_rows == 1){
-                                    $respuestaOK = true;
-                                    $mensajeError = 'Se ha actualizado el registro correctamente';
+                        $nombreUsuario = strip_tags($_POST['txtNombreRegistro']);
+                        $nickNameUsuario = strip_tags($nom);
+                        
+                        $stmEditandoUsuarios->execute();//para ejecutar nuestro query
+                        $stmEditandoDP->execute();//ejecuto la insercion hacia direccion
 
-                                    $contenidoOK = consultaUsers($mysqli);
-
-                            }else{
-                                    $mensajeError = 'No se ha actualizado el registro';
-                            }
-
-
+                    }catch(PDOException $e)
+                    {
+                        $editandoTransaccion->rollBack();
+                        throw $e;
+                        $editandoTransaccion = null;//dejamos con un valor nulo la conexion
+                    }
+                    if($editandoTransaccion == true)
+                    {
+                        $respuestaOK = true;
+                        $mensajeError = 'Se ha actualizado el registro correctamente';
+                        $contenidoOK = $editandoTransaccion;
+                    }
+                    else
+                    {
+                        $mensajeError = 'Se ha actualizado el registro correctamente';
+                    }
                     break;
-                    case 'eliminar':
-                            // Armamos el query
-                            $query = sprintf("DELETE FROM tbl_usuarios
-                                                             WHERE id_user=%d LIMIT 1",
-                                                             $_POST['id_user']);
-
-                            // Ejecutamos el query
-                            $resultadoQuery = $mysqli -> query($query);
-
-                            // Validamos que se haya actualizado el registro
-                            if($mysqli -> affected_rows == 1){
-                                    $respuestaOK = true;
-                                    $mensajeError = 'Se ha actualizado el registro correctamente';
-
-                                    $contenidoOK = consultaUsers($mysqli);
-
-                            }else{
-                                    $mensajeError = 'No se ha eliminado el registro';
-                            }
-                    break;
+//                    case 'eliminar':
+//                            // Armamos el query
+//                            $query = sprintf("DELETE FROM tbl_usuarios
+//                                                             WHERE id_user=%d LIMIT 1",
+//                                                             $_POST['id_user']);
+//
+//                            // Ejecutamos el query
+//                            $resultadoQuery = $mysqli -> query($query);
+//
+//                            // Validamos que se haya actualizado el registro
+//                            if($mysqli -> affected_rows == 1){
+//                                    $respuestaOK = true;
+//                                    $mensajeError = 'Se ha actualizado el registro correctamente';
+//
+//                                    $contenidoOK = consultaUsers($mysqli);
+//
+//                            }else{
+//                                    $mensajeError = 'No se ha eliminado el registro';
+//                            }
+//                    break;
 
                     default:
                             $mensajeError = 'Esta acción no se encuentra disponible';
@@ -297,110 +317,38 @@ class InstruccionesGenerales
 
         $statusTipoOK = array("Activo" => "btn-success",
                                                   "Suspendido" => "btn-warning");
-
-
-        // Validar conexión con la base de datos
-        //if($errorDbConexion == false){
-        //	// Validamos qe existan las variables post
-        //	if(isset($_POST) && !empty($_POST)){
-        //		// Verificamos las variables de acción
-        //		switch ($_POST['accion']) {
-        //			case 'addUser':
-        //				// Armamos el query
-        //				$query = sprintf("INSERT INTO tbl_usuarios
-        //								 SET usr_nombre='%s', usr_puesto='%s', usr_nick='%s', usr_status='%s'",
-        //								 $_POST['usr_nombre'],$_POST['usr_puesto'],$_POST['usr_nick'],$_POST['usr_status']);
-        //
-        //				// Ejecutamos el query
-        //				$resultadoQuery = $mysqli -> query($query);
-        //
-        //
-        //				// Obtenemos el id de user para edición
-        //				$id_userOK = $mysqli -> insert_id;
-        //
-        //				if($resultadoQuery == true){
-        //					$respuestaOK = true;
-        //					$mensajeError = "Se ha agregado el registro correctamente";
-        //					$contenidoOK = '
-        //						<tr>
-        //							<td>'.$_POST['usr_nombre'].'</td>
-        //							<td>'.$_POST['usr_puesto'].'</td>
-        //							<td>'.$_POST['usr_nick'].'</td>
-        //							<td class="centerTXT"><span class="btn btn-mini '.$statusTipoOK[$_POST['usr_status']].'">'.$_POST['usr_status'].'</span></td>
-        //							<td class="centerTXT"><a data-accion="editar" class="btn btn-mini" href="'.$id_userOK.'">Editar</a> <a data-accion="eliminar" class="btn btn-mini" href="'.$id_userOK.'">Eliminar</a></td>
-        //						<tr>
-        //					';
-        //
-        //				}
-        //				else{
-        //					$mensajeError = "No se puede guardar el registro en la base de datos";
-        //				}
-        //
-        //			break;
-        //			
-        //			case 'editUser':
-        //				// Armamos el query
-        //				$query = sprintf("UPDATE tbl_usuarios
-        //								 SET usr_nombre='%s', usr_puesto='%s', usr_nick='%s', usr_status='%s'
-        //								 WHERE id_user=%d LIMIT 1",
-        //								 $_POST['usr_nombre'],$_POST['usr_puesto'],$_POST['usr_nick'],$_POST['usr_status'],$_POST['id_user']);
-        //
-        //				// Ejecutamos el query
-        //				$resultadoQuery = $mysqli -> query($query);
-        //
-        //				// Validamos que se haya actualizado el registro
-        //				if($mysqli -> affected_rows == 1){
-        //					$respuestaOK = true;
-        //					$mensajeError = 'Se ha actualizado el registro correctamente';
-        //
-        //					$contenidoOK = consultaUsers($mysqli);
-        //
-        //				}else{
-        //					$mensajeError = 'No se ha actualizado el registro';
-        //				}
-        //
-        //
-        //			break;
-        //			case 'eliminar':
-        //				// Armamos el query
-        //				$query = sprintf("DELETE FROM tbl_usuarios
-        //								 WHERE id_user=%d LIMIT 1",
-        //								 $_POST['id_user']);
-        //
-        //				// Ejecutamos el query
-        //				$resultadoQuery = $mysqli -> query($query);
-        //
-        //				// Validamos que se haya actualizado el registro
-        //				if($mysqli -> affected_rows == 1){
-        //					$respuestaOK = true;
-        //					$mensajeError = 'Se ha actualizado el registro correctamente';
-        //
-        //					$contenidoOK = consultaUsers($mysqli);
-        //
-        //				}else{
-        //					$mensajeError = 'No se ha eliminado el registro';
-        //				}
-        //			break;
-        //
-        //			default:
-        //				$mensajeError = 'Esta acción no se encuentra disponible';
-        //			break;
-        //		}
-        //	}
-        //	else{
-        //		$mensajeError = 'No se puede ejecutar la aplicación';
-        //	}
-        //
-        //
-        //}
-        //else{
-        //	$mensajeError = 'No se puede establecer conexión con la base de datos';
-        //}
-        //
         // Armamos array para convertir a JSON
         $salidaJson = array("respuesta" => $respuestaOK, "mensaje" => $mensajeError, "contenido" => $contenidoOK);
 
         print json_encode($salidaJson);
     }
+    
+    //--------------------------------------------------------------------------archivos para la paginacion
+    
+    function selectCount($queryContador)
+    {
+        $mostrandoContador = ConexionPDO::conexion($this->nombreHost, $this->usuario, $this->clave, $this->nombreBD)->query($queryContador);
+        
+        foreach($mostrandoContador as $total)
+        {
+            $this->contador[] = $total;
+        }
+        return $this->contador;
+        $mostrandoContador = null;//dejamos con un valor nulo la conexion
+    }
+
+    public function imprimiendoColumnas($inicio)
+    {
+        $sql="SELECT tbdatosusuario.direccionarchivos as 'direccionFoto', tbdatosusuario.nombreusuario as 'nombreUsuario', tbdatosusuario.usuario as 'nickUsuario', tbusuarios.correlativo FROM tbdatosusuario INNER JOIN tbusuarios ON tbdatosusuario.usuario = tbusuarios.usuario ORDER BY nombreusuario LIMIT $inicio, 10";
+        
+        $mostrandoPaginacion = ConexionPDO::conexion($this->nombreHost, $this->usuario, $this->clave, $this->nombreBD)->query($sql);
+        foreach($mostrandoPaginacion as $pag)
+        {
+            $this->com[] = $pag;
+        }
+            return $this->com;
+    }
+    //--------------------------------------------------------------------------archivos para la paginacion
+    
 }
 ?>
